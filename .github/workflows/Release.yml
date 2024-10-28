@@ -162,6 +162,6 @@ jobs:
       - name: Sleep 30s
         run: sleep 30s
       - name: First load of itch.io 
-        uses: karol-brejna-i/webpage-screenshot-action@v1
+        uses: karol-brejna-i/webpage-screenshot-action@v1.1.2
         with:
           url: https://dylanlangston.itch.io/next
