@@ -7,67 +7,46 @@ updates:
       prefix: "Node/Bun - "
     directory: "/site"
     schedule:
-      interval: "weekly"
-    labels:
-      - ":label: Dependencies"
-      - ":technologist:TypeScript/JavaScript :green_circle:"
+      interval: "daily"
   - package-ecosystem: "gitsubmodule"
     open-pull-requests-limit: 3
     commit-message:
       prefix: "Submodule - "
     directory: "/"
     schedule:
-      interval: "weekly"
-    labels:
-      - ":label: Dependencies"
-      - ":technologist: Submodules :large_blue_circle:"
+      interval: "daily"
   - package-ecosystem: "github-actions"
     open-pull-requests-limit: 10
     commit-message:
       prefix: "Github Actions - "
     directory: ./.github/actions/DockerCache
     schedule:
-      interval: "weekly"
-    labels:
-      - ":label: Dependencies"
-      - ":technologist: Github Actions :brown_circle:"
+      interval: "daily"
   - package-ecosystem: "github-actions"
     open-pull-requests-limit: 10
     commit-message:
       prefix: "Github Actions - "
     directory: ./.github/actions/VersionString
     schedule:
-      interval: "weekly"
-    labels:
-      - ":label: Dependencies"
-      - ":technologist: Github Actions :brown_circle:"
+      interval: "daily"
   - package-ecosystem: "github-actions"
     open-pull-requests-limit: 10
     commit-message:
       prefix: "Github Actions - "
     directory: ./.github/actions/PopulateBuildSummary
     schedule:
-      interval: "weekly"
-    labels:
-      - ":label: Dependencies"
-      - ":technologist: Github Actions :brown_circle:"
+      interval: "daily"
   - package-ecosystem: "github-actions"
     open-pull-requests-limit: 10
     commit-message:
       prefix: "Github Actions - "
     directory: ./.github/actions/SAMDeploy
     schedule:
-      interval: "weekly"
-    labels:
-      - ":label: Dependencies"
-      - ":technologist: Github Actions :brown_circle:"
+      interval: "daily"
   - package-ecosystem: "github-actions"
     open-pull-requests-limit: 10
     commit-message:
       prefix: "Github Actions - "
     directory: ./.github/workflows/
     schedule:
-      interval: "weekly"
-    labels:
-      - ":label: Dependencies"
-      - ":technologist: Github Actions :brown_circle:"
+      interval: "daily"
