@@ -19,7 +19,6 @@ vscode:
     - bierner.markdown-preview-github-styles
     - bierner.markdown-mermaid
     - dtoplak.vscode-glsllint
-    - rust-lang.rust-analyzer
     - tamasfe.even-better-toml
     - redhat.vscode-yaml
     - amazonwebservices.aws-toolkit-vscode

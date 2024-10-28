@@ -33,21 +33,21 @@ jobs:
       version: ${{ steps.get_version.outputs.version }}
     steps:
       - name: Initialize Summary
-        uses: dylanlangston/dylanlangston.com/.github/actions/PopulateBuildSummary@main
+        uses: dylanlangston/next/.github/actions/PopulateBuildSummary@main
         id: summary
         with:
           version: ${{ steps.get_version.outputs.version }}
           mode: 'onpush'
           runId: ${{ github.run_id }}
       - name: Get Version
-        uses: dylanlangston/dylanlangston.com/.github/actions/VersionString@main
+        uses: dylanlangston/next/.github/actions/VersionString@main
         id: get_version
         with:
           time: ${{ inputs.startTimestamp || github.event.head_commit.timestamp }}
   TestAndBuild:
     name: "Step 1️⃣"
     if: ${{ success() || needs.Test.result == 'skipped' }}
-    uses: dylanlangston/dylanlangston.com/.github/workflows/TestAndBuild.yml@main
+    uses: dylanlangston/next/.github/workflows/TestAndBuild.yml@main
     needs: [Initialize]
     permissions:
       contents: read
@@ -57,7 +57,7 @@ jobs:
   Deploy:
     name: "Step 2️⃣"
     if: ${{ success() || needs.Build.result == 'success' }}
-    uses: dylanlangston/dylanlangston.com/.github/workflows/Deploy.yml@main
+    uses: dylanlangston/next/.github/workflows/Deploy.yml@main
     needs: [Initialize, TestAndBuild]
     permissions:
       contents: read
@@ -68,7 +68,7 @@ jobs:
   Release:
     name: "Step 3️⃣"
     if: ${{ success() || needs.Deploy.result == 'success' }}
-    uses: dylanlangston/dylanlangston.com/.github/workflows/Release.yml@main
+    uses: dylanlangston/next/.github/workflows/Release.yml@main
     needs: [Initialize, Deploy]
     secrets: inherit
     permissions:

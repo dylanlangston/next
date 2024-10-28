@@ -29,7 +29,7 @@ jobs:
       name: production
     steps:
       - name: Release Summary
-        uses: dylanlangston/dylanlangston.com/.github/actions/PopulateBuildSummary@main
+        uses: dylanlangston/next/.github/actions/PopulateBuildSummary@main
         id: summary
         with:
           version: ${{ inputs.version }}
@@ -68,7 +68,7 @@ jobs:
                 owner: "${{ github.repository_owner }}",
                 repo: repoName,
                 release_id: releaseId,
-                body: "**DylanLangston.com - _Prerelease v${{ inputs.version }}_**<br/>" + core.getInput('commit-message', { required: true }),
+                body: "**next - _Release v${{ inputs.version }}_**<br/>" + core.getInput('commit-message', { required: true }),
                 prerelease: true,
                 draft: false,
               });
@@ -87,7 +87,7 @@ jobs:
               }
             } else {
               const releaseResponse = await github.rest.repos.createRelease({
-                  body: "**DylanLangston.com - _Prerelease v${{ inputs.version }}_**<br/>" + core.getInput('commit-message', { required: true }),
+                  body: "**next - _Release v${{ inputs.version }}_**<br/>" + core.getInput('commit-message', { required: true }),
                   name: "v${{ inputs.version }}",
                   make_latest: "true",
                   owner: "${{ github.repository_owner }}",
@@ -115,7 +115,7 @@ jobs:
               fs.mkdirSync(artifactsFolder);
             }
 
-            for (let prefix of ["dylanlangston.com-v", "dylanlangston.com-contact-v", "dylanlangston.com-email-v", "dylanlangston.com-chat-v"]) {
+            for (let prefix of ["next-v"]) {
               const matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
                 return artifact.name == prefix + "${{ inputs.version }}"
               })[0];
@@ -145,18 +145,3 @@ jobs:
                   repo: repoName
               });
             }
-      - name: Deploy to AWS
-        uses: dylanlangston/dylanlangston.com/.github/actions/SAMDeploy@main
-        id: deploy
-        with:
-          aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
-          aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-          aws-acm-arn: "${{ secrets.AWS_ACM_ARN }}"
-          aws-cloudfront-distribution: "${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION }}"
-          aws-region: 'us-east-1'
-          to-email: "${{ secrets.TO_EMAIL }}"
-          from-email: "${{ secrets.FROM_EMAIL }}"
-          aws-bucket: "${{ secrets.AWS_BUCKET }}"
-          aws-account-id: "${{ secrets.AWS_ACCOUNT_ID }}"
-          gemini-api-key: "${{ secrets.GEMINI_API_KEY }}"
-            

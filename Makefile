@@ -50,25 +50,18 @@ ifeq ($(USE_NODE),1)
 else
 	@bun -b run --cwd ./site test-bun
 endif
-	@make test-rust-lambda
 
 release: clean build-web build-site  ## Default Release Target. Builds Web Version for publish
-ifeq ($(OPTIMIZE),Debug)
-else
-	@make build-rust-lambda build-python-lambda
-endif
 
-setup: setup-emscripten setup-bun setup-rust setup-python # Default Setup Target. Sets up emscripten, nodejs, playwright, and rust.
+setup: setup-emscripten setup-bun # Default Setup Target. Sets up emscripten, nodejs, playwright
 
 clean: ## Default Clean Target.
 	@rm -rf ./zig-out/*
 	@rm -rf ./site/build/*
-	@rm -rf ./rust-lambda/target/*
 	@echo Cleaned Output
 
 clean-cache: clean ## Clean the Zig-cache also
 	@rm -rf ./zig-cache/*
-	@cargo clean --manifest-path ./rust-lambda/Cargo.toml || true
 	@echo Cleaned Cache
 
 setup-git-clone: ## Clone git submodules

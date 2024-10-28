@@ -21,25 +21,6 @@ updates:
     labels:
       - ":label: Dependencies"
       - ":technologist: Submodules :large_blue_circle:"
-  - package-ecosystem: "cargo"
-    open-pull-requests-limit: 50
-    commit-message:
-      prefix: "Rust - "
-    directory: "/rust-lambda"
-    schedule:
-      interval: "weekly"
-    labels:
-      - ":label: Dependencies"
-      - ":technologist: Rust :red_circle:"
-  - package-ecosystem: "pip"
-    open-pull-requests-limit: 50
-    commit-message:
-      prefix: "Python - "
-    directory: "/python-lambda"
-    schedule:
-      interval: "weekly"
-    labels:
-      - ":label: Dependencies"
   - package-ecosystem: "github-actions"
     open-pull-requests-limit: 10
     commit-message:

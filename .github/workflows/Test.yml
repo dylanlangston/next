@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Test Summary
-        uses: dylanlangston/dylanlangston.com/.github/actions/PopulateBuildSummary@main
+        uses: dylanlangston/next/.github/actions/PopulateBuildSummary@main
         id: summary
         with:
           version: ${{ inputs.version }}
