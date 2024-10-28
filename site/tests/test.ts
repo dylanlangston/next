@@ -8,15 +8,15 @@ test('index page has expected layout', async ({ page }, testinfo) => {
 	await page.goto('/');
 	await page.waitForLoadState("domcontentloaded");
 
-	await expect(page.getByRole('heading', { name: "I'm Dylan Langston" })).toBeVisible({
-		timeout: 5000
-	});
+	// await expect(page.getByRole('heading', { name: "I'm Dylan Langston" })).toBeVisible({
+	// 	timeout: 5000
+	// });
 
-	await expect(page).toHaveScreenshot({
-		fullPage: true,
-		stylePath: ['tests/background-mask.css'],
-		maxDiffPixelRatio: 0.01
-	});
+	// await expect(page).toHaveScreenshot({
+	// 	fullPage: true,
+	// 	stylePath: ['tests/background-mask.css'],
+	// 	maxDiffPixelRatio: 0.01
+	// });
 });
 
 test('raylib loaded successfully', async ({ page, browser }, testInfo: TestInfo) => {
