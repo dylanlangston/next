@@ -24,7 +24,7 @@
 			<div
 				class="static flex flex-col self-center text-sm text-center md:block lg:row-end-1 lg:col-end-1"
 			>
-				<span>Dylan Langston</span> <span>©{new Date().getFullYear()} All rights reserved</span>
+				<span><a href="https://raylib.com/">Made with raylib</a></span>
 			</div>
 		</div>
 	</div>

@@ -26,13 +26,30 @@ a {
   }
 }
 
-.background-overlay {
-  @apply pointer-events-none shadow-inner shadow-black w-full h-full top-0 left-0 fixed animate-[fade-in_1s_linear];
-}
-
 .loader {
-  @apply animate-loader w-10/12 h-1/6 rounded-full;
-	background: linear-gradient(var(--Main) 0 0) left -65% top 0 /40% 100% no-repeat transparent;
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid #0000;
+  border-right-color: var(--Main);
+  position: relative;
+  animation: l24 1s infinite linear;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: inherit;
+  animation: inherit;
+  animation-duration: 2s;
+}
+.loader:after {
+  animation-duration: 4s;
+}
+@keyframes l24 {
+  100% {transform: rotate(1turn)}
 }
 
 .glass {
@@ -42,7 +59,7 @@ a {
 }
 .glass::before {
   background: linear-gradient(
-      130deg, 
+      90deg, 
       color-mix(in srgb, var(--Main) 25%, transparent), 
       color-mix(in srgb, color-mix(in hsl increasing hue, var(--Main) 80%, black) 75%, transparent), 
       70%, 
@@ -53,7 +70,7 @@ a {
 }
 .glass::after {
   background: linear-gradient(
-    130deg, 
+    90deg, 
     color-mix(in srgb, var(--Main) 25%, transparent), 
     color-mix(in srgb, color-mix(in hsl increasing hue, var(--Main) 80%, white) 75%, transparent), 
     70%, 

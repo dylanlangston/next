@@ -76,23 +76,26 @@
 	let showCookieModal = false;
 	let showInitialCookieModal = true;
 
+	let isItchZone: boolean;
 	let mobile: typeof Environment.isMobile | undefined = undefined;
 	let accessibilityRequested: typeof Environment.accessibilityRequested | undefined = undefined;
 	let contrastRequested: typeof Environment.contrastRequested | undefined = undefined;
 
 	onMount(() => {
+		isItchZone = Environment.isItchZone();
 		mobile = Environment.isMobile;
 		accessibilityRequested = Environment.accessibilityRequested;
 		contrastRequested = Environment.contrastRequested;
 
 		const { userAccepted, analytics } = CookieSettingsManager.getPreferences();
 
-		showInitialCookieModal = !userAccepted;
+		showInitialCookieModal = !userAccepted && !isItchZone;
 
-		if (!userAccepted) setTimeout(() => (showCookieModal = true), 2500);
+		if (showInitialCookieModal) setTimeout(() => (showCookieModal = true), 2500);
 
-		if (analytics) allConsentGranted();
-		else allConsentDenied();
+		
+		if (analytics  && !isItchZone) allConsentGranted();
+		else if (!isItchZone) allConsentDenied();
 
 		loaded = true;
 	});
@@ -118,26 +121,30 @@
 	{/if}
 	<link rel="preload" href="next.wasm" as="fetch" />
 
-	<!-- Google tag (gtag.js) -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-F7T0BEE9B6"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag() {
-			dataLayer.push(arguments);
-		}
-		gtag('consent', 'default', {
-			ad_storage: 'denied',
-			analytics_storage: 'denied'
-		});
-		gtag('js', new Date());
-		gtag('config', 'G-F7T0BEE9B6');
-	</script>
-	{#if !loaded}
-		<style>
-			.jsonly {
-				display: none;
+	{#if !isItchZone}
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-F7T0BEE9B6"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
 			}
-		</style>
+			gtag('consent', 'default', {
+				ad_storage: 'denied',
+				analytics_storage: 'denied'
+			});
+			gtag('js', new Date());
+			gtag('config', 'G-F7T0BEE9B6');
+		</script>
+	{/if}
+	{#if !loaded}
+		<noscript>
+			<style>
+				.jsonly {
+					display: none;
+				}
+			</style>
+		</noscript>
 	{/if}
 </svelte:head>
 
@@ -174,19 +181,23 @@
 						</div>
 					</main>
 				{/key}
-				<div class="w-screen" in:blur|local={{ duration: 500 }}>
-					<Footer
-						openCookieSettings={() => {
-							showCookieModal = true;
-						}}
-					/>
-				</div>
+				{#if !isItchZone}
+					<div class="w-screen" in:blur|local={{ duration: 500 }}>
+						<Footer
+							openCookieSettings={() => {
+								showCookieModal = true;
+							}}
+						/>
+					</div>
+				{/if}
 			{:else}
-				<div
-					class="loader m-auto"
-					class:invisible={emscriptenLoaded}
-					out:animateOut={{ key }}
-				></div>
+				<div class="absolute top-0 left-0 w-screen h-screen flex align-center">
+					<div
+						class="loader m-auto"
+						class:invisible={emscriptenLoaded}
+						out:animateOut={{ key }}
+					></div>
+				</div>
 			{/if}
 		</div>
 		{#if showCookieModal}
@@ -243,6 +254,9 @@
 					</StatusContainer>
 				</div>
 			</noscript>
+			<div class="jsonly absolute top-0 left-0 w-screen h-screen flex align-center">
+				<div class="loader m-auto"></div>
+			</div>
 		</main>
 	{/if}
 </div>

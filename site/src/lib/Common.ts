@@ -144,6 +144,8 @@ export class Environment {
 
     private static detector = new BrowserDetector();
 
+    public static isItchZone = () => window.location?.host?.endsWith('itch.zone') ?? false;
+
     public static isMobile = readable(false, (set: (value: boolean) => void) => {
         const listener = (e: Event) => {
             set(this.detector.parseUserAgent(window.navigator.userAgent).isMobile);

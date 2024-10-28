@@ -21,32 +21,6 @@ export default {
 		},
 		extend: {
 			keyframes: {
-				'loader': {
-					'100%': { 'background-position': 'right -65% top 0' },
-				},
-				'loader-shadow': {
-					'0%': {
-						'filter': 'drop-shadow(0px 0px 3vh red)'
-					},
-					'16.67%': {
-						'filter': 'drop-shadow(0px 0px 5vh orange)'
-					},
-					'33.34%': {
-						'filter': 'drop-shadow(0px 0px 3vh yellow)'
-					},
-					'50%': {
-						'filter': 'drop-shadow(0px 0px 5vh green)'
-					},
-					'66.67%': {
-						'filter': 'drop-shadow(0px 0px 3vh blue)'
-					},
-					'83.34%': {
-						'filter': 'drop-shadow(0px 0px 5vh purple)'
-					},
-					'100%': {
-						'filter': 'drop-shadow(0px 0px 3vh red)'
-					},
-				},
 				'fade-in': {
 					'0%, 50%': { opacity: 0 },
 					'100%': { opacity: 1 },
@@ -63,7 +37,6 @@ export default {
 				}
 			},
 			animation: {
-				loader: 'loader 1s infinite steps(30), loader-shadow 17s linear infinite alternate',
 				glass: 'blur-in 200ms 300ms linear forwards',
 			}
 		},
@@ -75,7 +48,7 @@ export default {
 		function ({ addBase, theme }) {
 			addBase({
 				':root': {
-					'--Main': 'rgba(128,255,128,1)',
+					'--Main': 'rgba(128,128,128,0.5)',
 				},
 			});
 		},

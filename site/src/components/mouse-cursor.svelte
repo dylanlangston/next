@@ -29,6 +29,20 @@
 
 	let loaded: boolean = false;
 
+	function debounce(cb: Function, t: number) {
+		let timer: NodeJS.Timeout;
+		return (...args: any[]) => {
+			clearTimeout(timer);
+			timer = setTimeout(() => cb(...args), t);
+		};
+	}
+
+	const hideAfterOneSecond = debounce(() => {
+		if (get(size) == 10) {
+			size.set(0);
+		}
+	}, 1000);
+
 	onMount(() => (loaded = true));
 </script>
 
@@ -53,33 +67,32 @@
 			size.set(10);
 		}
 		visible = getComputedStyle(e.target as Element).cursor == 'none';
+		hideAfterOneSecond();
 	}}
 	on:mousedown|capture|passive={(e) => {
 		if (visible) size.set(30);
 	}}
 	on:mouseup|capture|passive={(e) => {
 		if (visible) size.set(10);
+		hideAfterOneSecond();
 	}}
 />
-<svg
-	class="absolute top-0 left-0 w-screen h-screen pointer-events-none transition"
->
+<svg class="absolute top-0 left-0 w-screen h-screen pointer-events-none transition">
 	{#if $size > 0}
 		<circle
 			cx={$coords1.x}
 			cy={$coords1.y}
 			r={$size}
 			class="stroke-main"
-			stroke-width="3"
+			stroke-width={$size / 3}
 			fill-opacity="0"
 		/>
-
 		<circle
 			cx={$coords2.x}
 			cy={$coords2.y}
 			r={$size / 3}
 			class="stroke-white/[.5] dark:stroke-black/[.5] fill-black dark:fill-white"
-			stroke-width="0.5"
+			stroke-width={$size / 3}
 		/>
 	{/if}
 </svg>
