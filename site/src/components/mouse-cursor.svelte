@@ -3,6 +3,7 @@
 	import { spring } from 'svelte/motion';
 	import { readable, writable, get } from 'svelte/store';
 	import { onMount } from 'svelte';
+	import { MousePointerIcon } from 'svelte-feather-icons';
 
 	let coords1 = spring(
 		{ x: 0, y: 0 },
@@ -80,19 +81,15 @@
 <svg class="absolute top-0 left-0 w-screen h-screen pointer-events-none transition">
 	{#if $size > 0}
 		<circle
-			cx={$coords1.x}
-			cy={$coords1.y}
-			r={$size}
+			cx={$coords1.x - 2 + $size}
+			cy={$coords1.y - 2 + $size}
+			r={$size * 2}
 			class="stroke-main"
 			stroke-width={$size / 3}
 			fill-opacity="0"
 		/>
-		<circle
-			cx={$coords2.x}
-			cy={$coords2.y}
-			r={$size / 3}
-			class="stroke-white/[.5] dark:stroke-black/[.5] fill-black dark:fill-white"
-			stroke-width={$size / 3}
-		/>
+		<svg x={$coords2.x - 2} y={$coords2.y - 2}>
+			<MousePointerIcon class="stroke-white/[.5] dark:stroke-black/[.5] fill-black dark:fill-white" size={`${($size * 2)}`}></MousePointerIcon>
+		</svg>
 	{/if}
 </svg>
