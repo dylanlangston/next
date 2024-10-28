@@ -3,18 +3,18 @@ import { hash } from "$lib/Common";
 // Essentially just a hash map
 export class IPCProxy {
     private static proxies: { [type: number]: any | null } = {};
-    public static Add(f: any): number {
-        const index = hash(f.toString())
+    public static Add(f: any, type: string,): number {
+        const index = hash(f.toString() + type)
         this.proxies[index] = f;
         return index;
     }
-    public static Remove = (f: any): number => {
-        const index = hash(f.toString());
+    public static Remove = (f: any, type: string,): number => {
+        const index = hash(f.toString() + type);
         this.proxies[index] = null;
         return index;
     }
-    public static RemoveExisting = (f: any): any => {
-        const index = hash(f.toString());
+    public static RemoveExisting = (f: any, type: string): any => {
+        const index = hash(f.toString() + type);
         const temp = this.proxies[index];
         this.proxies[index] = null;
         return temp;

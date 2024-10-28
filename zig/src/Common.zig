@@ -311,19 +311,32 @@ pub const Common = struct {
             }.resize);
 
             // Handle Visiblity Change
-            const focus = &struct {
+            _ = emscripten.emscripten_set_focus_callback(2, null, true, &struct {
                 fn focus(t: c_int, data: [*c]const emscripten.struct_EmscriptenFocusEvent, callback: ?*anyopaque) callconv(.C) bool {
                     _ = t;
                     _ = callback;
                     _ = data;
 
-                    Focused = !Focused;
+                    Common.Log.Info("Focus");
+
+                    Focused = true;
 
                     return false;
                 }
-            }.focus;
-            _ = emscripten.emscripten_set_focus_callback(2, null, true, focus);
-            _ = emscripten.emscripten_set_blur_callback(2, null, true, focus);
+            }.focus);
+            _ = emscripten.emscripten_set_blur_callback(2, null, true, &struct {
+                fn blur(t: c_int, data: [*c]const emscripten.struct_EmscriptenFocusEvent, callback: ?*anyopaque) callconv(.C) bool {
+                    _ = t;
+                    _ = callback;
+                    _ = data;
+
+                    Common.Log.Info("Blur");
+
+                    Focused = false;
+
+                    return false;
+                }
+            }.blur);
         } else {
             raylib.SetConfigFlags(raylib.FLAG_VSYNC_HINT | raylib.FLAG_MSAA_4X_HINT | raylib.FLAG_WINDOW_HIGHDPI);
 

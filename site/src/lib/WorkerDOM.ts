@@ -17,11 +17,11 @@ export namespace WorkerDOM {
 
     export class Window {
         public addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
-            const id = IPCProxy.Add(listener);
+            const id = IPCProxy.Add(listener, type);
             postMessage(IPCMessage.AddEventHandler({ id, target: 'Window', type }));
         }
         public removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
-            const id = IPCProxy.Remove(listener);
+            const id = IPCProxy.Remove(listener, type);
             postMessage(IPCMessage.RemoveEventHandler({ id, target: 'Window', type }));
         }
         public matchMedia(query: string): MediaQueryList {
@@ -55,13 +55,13 @@ export namespace WorkerDOM {
             this.canvas = canvas;
         }
         public addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
-            const id = IPCProxy.Add(listener);
+            const id = IPCProxy.Add(listener, type);
             postMessage(IPCMessage.AddEventHandler({ id, target: 'Document', type }));
         }
         public removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
             // Skip resize events
             if (type == "resize") return;
-            const id = IPCProxy.Remove(listener);
+            const id = IPCProxy.Remove(listener, type);
             postMessage(IPCMessage.RemoveEventHandler({ id, target: 'Window', type }));
         }
         public querySelector(selectors: string): HTMLElement | null {
@@ -114,7 +114,7 @@ export namespace WorkerDOM {
             // Resize handler
             const id = IPCProxy.Add((ev: any) => {
                 SetSize(ev.currentTarget.width, ev.currentTarget.height);
-            });
+            }, 'resize');
             postMessage(IPCMessage.AddEventHandler({ id, target: 'Window', type: "resize" }));
         }
         public get clientWidth(): number {
@@ -138,11 +138,11 @@ export namespace WorkerDOM {
             return this.canvas.dispatchEvent(event);
         }
         public addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
-            const id = IPCProxy.Add(listener);
+            const id = IPCProxy.Add(listener, type);
             postMessage(IPCMessage.AddEventHandler({ id, target: 'Canvas', type }));
         }
         public removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
-            const id = IPCProxy.Remove(listener);
+            const id = IPCProxy.Remove(listener, type);
             postMessage(IPCMessage.RemoveEventHandler({ id, target: 'Canvas', type }));
         }
         public set oncontextlost(value: ((this: OffscreenCanvas, ev: Event) => any) | null) {
@@ -275,7 +275,7 @@ export namespace WorkerDOM {
 
     class ScriptProcessorNode {
         public set onaudioprocess(value: ((this: ScriptProcessorNode, ev: AudioProcessingEvent) => any) | null) {
-            const funcProxy = IPCProxy.Add(value);
+            const funcProxy = IPCProxy.Add(value, 'audioprocess');
             postMessage(IPCMessage.AudioEvent(
                 AudioEventType.StartProcessAudio,
                 funcProxy
