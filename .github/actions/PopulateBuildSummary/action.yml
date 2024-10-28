@@ -1,0 +1,20 @@
+name: 'Populate Build Summary'
+description: 'Populates the build summary with the appropriate info.'
+inputs:
+  version:
+    description: 'Current Build Version'
+    required: false
+    default: 'UNKNOWN'
+  mode:
+    description: 'A supported mode to generate the build summary.'
+    required: true 
+  runId:
+    description: 'Current Workflow ID.'
+    required: true
+runs:
+  using: "node20"
+  main: "main.mjs"
+  post: "post.mjs"
+branding:
+  icon: 'file-text'
+  color: 'green'

@@ -1,0 +1,80 @@
+name: 🫸 On Push
+
+on:
+  push:
+    branches: ["main"]
+    
+  workflow_dispatch:
+    inputs:
+      startTimestamp:
+        description: 'Start Timestamp (unix)'
+        required: false
+        type: number
+      releaseNotes:
+        description: 'Release Notes'
+        required: true
+        type: string
+
+permissions:
+  packages: read
+  contents: write
+  id-token: write
+
+concurrency:
+  group: onpush-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  Initialize:
+    name: "Initialize Workflow ⏳"
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Initialize Summary
+        uses: dylanlangston/dylanlangston.com/.github/actions/PopulateBuildSummary@main
+        id: summary
+        with:
+          version: ${{ steps.get_version.outputs.version }}
+          mode: 'onpush'
+          runId: ${{ github.run_id }}
+      - name: Get Version
+        uses: dylanlangston/dylanlangston.com/.github/actions/VersionString@main
+        id: get_version
+        with:
+          time: ${{ inputs.startTimestamp || github.event.head_commit.timestamp }}
+  TestAndBuild:
+    name: "Step 1️⃣"
+    if: ${{ success() || needs.Test.result == 'skipped' }}
+    uses: dylanlangston/dylanlangston.com/.github/workflows/TestAndBuild.yml@main
+    needs: [Initialize]
+    permissions:
+      contents: read
+    with:
+      version: ${{ needs.Initialize.outputs.version }}
+      should-test: ${{ github.event.commits[0].author.name != 'dependabot[bot]' }}
+  Deploy:
+    name: "Step 2️⃣"
+    if: ${{ success() || needs.Build.result == 'success' }}
+    uses: dylanlangston/dylanlangston.com/.github/workflows/Deploy.yml@main
+    needs: [Initialize, TestAndBuild]
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    with:
+      version: ${{ needs.Initialize.outputs.version }}
+  Release:
+    name: "Step 3️⃣"
+    if: ${{ success() || needs.Deploy.result == 'success' }}
+    uses: dylanlangston/dylanlangston.com/.github/workflows/Release.yml@main
+    needs: [Initialize, Deploy]
+    secrets: inherit
+    permissions:
+      packages: read
+      contents: write
+    with:
+      version: ${{ needs.Initialize.outputs.version }}
+      commit-message: ${{ inputs.releaseNotes || github.event.head_commit.message }}
+      runId: ${{ github.run_id }}

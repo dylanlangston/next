@@ -1,0 +1,93 @@
+name: 2️⃣ - Build Site
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      should-test:
+        required: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  Build:
+    name: "Test 🧪 + Build 🧰"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Test + Build Summary
+        uses: dylanlangston/dylanlangston.com/.github/actions/PopulateBuildSummary@main
+        id: summary
+        with:
+          version: ${{ inputs.version }}
+          mode: 'testandbuild'
+          runId: ${{ github.run_id }}
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+      - name: Checkout Submodules
+        run: make setup-git-clone
+      - name: Cache Docker Image
+        uses: dylanlangston/dylanlangston.com/.github/actions/DockerCache@main
+        id: cache
+        with:
+          target: test-base
+          tag: dylanlangston.com:build
+      - name: Test using Docker
+        if: ${{ inputs.should-test }}
+        id: test
+        run: |
+          make test-docker VERSION=${{ inputs.version }}
+      - name: Build Release using Docker
+        if: ${{ success() || (steps.test.conclusion == 'skipped' && steps.cache.conclusion == 'success') }}
+        id: build
+        run: |
+          make release-docker VERSION=${{ inputs.version }} OPTIMIZE='ReleaseFast' PRECOMPRESS_RELEASE=1 OUTPUT_DIR='${{ runner.temp }}/release'
+      - name: Upload Release artifact
+        if: ${{ success() || steps.build.conclusion == 'success' }}
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: dylanlangston.com-v${{ inputs.version }}
+          path: '${{ runner.temp }}/release/site/build'
+      - name: Upload Contact Lambda artifact
+        if: ${{ success() || steps.upload.conclusion == 'success' }}
+        id: upload_contact_lambda
+        uses: actions/upload-artifact@v4
+        with:
+          name: dylanlangston.com-contact-v${{ inputs.version }}
+          path: '${{ runner.temp }}/release/rust-lambda/target/contact/'
+      - name: Upload Email Forward Lambda artifact
+        if: ${{ success() || steps.upload_contact_lambda.conclusion == 'success' }}
+        id: upload_email_lambda
+        uses: actions/upload-artifact@v4
+        with:
+          name: dylanlangston.com-email-v${{ inputs.version }}
+          path: '${{ runner.temp }}/release/rust-lambda/target/email-forward/'
+      - name: Upload Chat Lambda artifact
+        if: ${{ success() || steps.upload_email_lambda.conclusion == 'success' }}
+        id: upload_chat_lambda
+        uses: actions/upload-artifact@v4
+        with:
+          name: dylanlangston.com-chat-v${{ inputs.version }}
+          path: '${{ runner.temp }}/release/python-lambda/build'
+      - name: Build Debug using Docker
+        if: ${{ success() || (steps.upload_chat_lambda.conclusion == 'success') }}
+        id: build_debug
+        run: |
+          make release-docker VERSION=${{ inputs.version }} OUTPUT_DIR='${{ runner.temp }}/debug'
+          mv ${{ runner.temp }}/release/site/build/ ${{ runner.temp }}/debug/site/build/release
+      - name: Upload GitGub Pages artifact
+        if: ${{ success() || steps.build_debug.conclusion == 'success' }}
+        id: upload-compressed
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '${{ runner.temp }}/debug/site/build'

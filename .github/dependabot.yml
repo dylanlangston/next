@@ -1,0 +1,92 @@
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    open-pull-requests-limit: 50
+    commit-message:
+      prefix: "Node/Bun - "
+    directory: "/site"
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":label: Dependencies"
+      - ":technologist:TypeScript/JavaScript :green_circle:"
+  - package-ecosystem: "gitsubmodule"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "Submodule - "
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":label: Dependencies"
+      - ":technologist: Submodules :large_blue_circle:"
+  - package-ecosystem: "cargo"
+    open-pull-requests-limit: 50
+    commit-message:
+      prefix: "Rust - "
+    directory: "/rust-lambda"
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":label: Dependencies"
+      - ":technologist: Rust :red_circle:"
+  - package-ecosystem: "pip"
+    open-pull-requests-limit: 50
+    commit-message:
+      prefix: "Python - "
+    directory: "/python-lambda"
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":label: Dependencies"
+  - package-ecosystem: "github-actions"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "Github Actions - "
+    directory: ./.github/actions/DockerCache
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":label: Dependencies"
+      - ":technologist: Github Actions :brown_circle:"
+  - package-ecosystem: "github-actions"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "Github Actions - "
+    directory: ./.github/actions/VersionString
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":label: Dependencies"
+      - ":technologist: Github Actions :brown_circle:"
+  - package-ecosystem: "github-actions"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "Github Actions - "
+    directory: ./.github/actions/PopulateBuildSummary
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":label: Dependencies"
+      - ":technologist: Github Actions :brown_circle:"
+  - package-ecosystem: "github-actions"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "Github Actions - "
+    directory: ./.github/actions/SAMDeploy
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":label: Dependencies"
+      - ":technologist: Github Actions :brown_circle:"
+  - package-ecosystem: "github-actions"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "Github Actions - "
+    directory: ./.github/workflows/
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":label: Dependencies"
+      - ":technologist: Github Actions :brown_circle:"

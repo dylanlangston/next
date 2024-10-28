@@ -1,0 +1,15 @@
+name: 'Version String'
+description: 'Outputs the version string based on an input date'
+inputs:
+  time:
+    description: 'Time this version was build'
+    required: true
+outputs:
+  version:
+    description: "Version String"
+runs:
+  using: "node20"
+  main: "main.mjs"
+branding:
+  icon: 'git-commit'
+  color: 'green'

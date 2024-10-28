@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input,
+textarea,
+button,
+select,
+a {
+	-webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  color: white;
+  background: var(--Main);
+}
+
+* {
+  @apply text-black transition antialiased;
+  scrollbar-color: color-mix(in hsl increasing hue, var(--Main) 85%, black) color-mix(in srgb, color-mix(in hsl increasing hue, var(--Main) 80%, white) 75%, transparent);
+}
+
+@media ((forced-colors: active) or (prefers-contrast: more) or (prefers-contrast: custom)) {
+  * {
+    @apply font-black tracking-wide contrast-125;
+  }
+}
+
+.background-overlay {
+  @apply pointer-events-none shadow-inner shadow-black w-full h-full top-0 left-0 fixed animate-[fade-in_1s_linear];
+}
+
+.loader {
+  @apply animate-loader w-10/12 h-1/6 rounded-full;
+	background: linear-gradient(var(--Main) 0 0) left -65% top 0 /40% 100% no-repeat transparent;
+}
+
+.glass {
+  filter: blur(6px);
+  backdrop-filter: blur(0px);
+  @apply relative shadow-lg shadow-black/[.5] outline outline-1 outline-black/[0.15] dark:outline-white/[0.15] animate-glass transition-all;
+}
+.glass::before {
+  background: linear-gradient(
+      130deg, 
+      color-mix(in srgb, var(--Main) 25%, transparent), 
+      color-mix(in srgb, color-mix(in hsl increasing hue, var(--Main) 80%, black) 75%, transparent), 
+      70%, 
+      color-mix(in srgb, var(--Main) 25%, transparent)
+      );
+  transition: opacity 0.5s linear;
+  @apply top-0 bottom-0 left-0 right-0 absolute content-[''] opacity-0 -z-10;
+}
+.glass::after {
+  background: linear-gradient(
+    130deg, 
+    color-mix(in srgb, var(--Main) 25%, transparent), 
+    color-mix(in srgb, color-mix(in hsl increasing hue, var(--Main) 80%, white) 75%, transparent), 
+    70%, 
+    color-mix(in srgb, var(--Main) 25%, transparent)
+    );
+  transition: opacity 0.5s linear;
+  @apply top-0 bottom-0 left-0 right-0 absolute content-[''] opacity-100 -z-10;
+}
+.glass.round::before {
+  @apply rounded-lg;
+}
+.glass.round::after {
+  @apply rounded-lg;
+}
+.glass.round-full::before {
+  @apply rounded-full;
+}
+.glass.round-full::after {
+  @apply rounded-full;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass::before {
+    background: linear-gradient(
+        130deg, 
+        color-mix(in srgb, var(--Main) 25%, rgba(0,0,0,0.85)), 
+        color-mix(in srgb, color-mix(in hsl increasing hue, var(--Main) 80%, black) 75%, rgba(0,0,0,0.85)), 
+        70%, 
+        color-mix(in srgb, var(--Main) 25%, rgba(0,0,0,0.85))
+        );
+  }
+  .glass::after {
+    background: linear-gradient(
+      130deg, 
+      color-mix(in srgb, var(--Main) 25%, rgba(255,255,255,0.85)), 
+      color-mix(in srgb, color-mix(in hsl increasing hue, var(--Main) 80%, white) 75%, rgba(255,255,255,0.85)), 
+      70%, 
+      color-mix(in srgb, var(--Main) 25%, rgba(255,255,255,0.85))
+      );
+  }
+}
+
+@media ((forced-colors: active) or (prefers-contrast: more) or (prefers-contrast: custom)) {
+  .glass::before {
+    background: color-mix(in hsl increasing hue, var(--Main) 80%, black)
+  }
+  .glass::after {
+    background: color-mix(in hsl increasing hue, var(--Main) 80%, white);
+  }
+}
+
+.glass-no-animate {
+  filter: blur(0px) !important;
+  backdrop-filter: blur(16px) !important;
+  @apply glass;
+}
+
+/* Dark Theme */
+@media (prefers-color-scheme: dark) {
+  body:not(.light) main * {
+    @apply text-white transition;
+    scrollbar-color: color-mix(in hsl increasing hue, var(--Main) 85%, white) color-mix(in srgb, color-mix(in hsl increasing hue, var(--Main) 80%, black) 75%, transparent);
+  }
+  body:not(.light) .glass::before {
+    opacity: 1;
+  }
+  body:not(.light) .glass::after {
+    opacity: 0;
+  }
+}
+body.dark * {
+  @apply text-white transition;
+  scrollbar-color: color-mix(in hsl increasing hue, var(--Main) 85%, white) color-mix(in srgb, color-mix(in hsl increasing hue, var(--Main) 80%, black) 75%, transparent);
+}
+body.dark .glass::before {
+  opacity: 1;
+}
+body.dark .glass::after {
+  opacity: 0;
+}

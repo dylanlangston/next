@@ -1,0 +1,28 @@
+.{
+    .name = "next",
+    .version = "1.0.0",
+    .minimum_zig_version = "0.13.0",
+    .dependencies = .{
+        .raylib = .{
+            .path = "raylib",
+        },
+        .raygui = .{
+            .path = "raygui",
+        },
+        .emscripten = .{
+            .path = "emsdk",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "zig-src",
+        "site",
+        "emsdk",
+        "LICENSE",
+        "README.md",
+        "compose-dev.yaml",
+        "Dockerfile",
+        "Makefile",
+    },
+}

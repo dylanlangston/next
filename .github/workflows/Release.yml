@@ -1,0 +1,162 @@
+name: 4️⃣ - Release Site to Production
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      commit-message:
+        required: true
+        type: string
+      runId:
+        required: true
+        type: string
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: "Release 📦"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      packages: read
+      contents: write
+    environment:
+      name: production
+    steps:
+      - name: Release Summary
+        uses: dylanlangston/dylanlangston.com/.github/actions/PopulateBuildSummary@main
+        id: summary
+        with:
+          version: ${{ inputs.version }}
+          mode: 'release'
+          runId: ${{ github.run_id }}
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+      - name: 'Create or Update Release'
+        uses: actions/github-script@v7
+        env:
+          INPUT_COMMIT-MESSAGE: ${{ inputs.commit-message }}
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const repoName = "${{ github.repository }}".split('/')[1];
+            let existingRelease = undefined;
+            try {
+              existingRelease = await github.rest.repos.getReleaseByTag({
+                owner: "${{ github.repository_owner }}",
+                repo: repoName,
+                tag: "v${{ inputs.version }}"
+              });
+            } catch {}
+
+            let releaseId = undefined;
+            let uploadUrl = undefined;
+
+            if (existingRelease?.status === 200) {
+              releaseId = existingRelease.data.id;
+              uploadUrl = existingRelease.data.upload_url;
+
+              await github.rest.repos.updateRelease({
+                owner: "${{ github.repository_owner }}",
+                repo: repoName,
+                release_id: releaseId,
+                body: "**DylanLangston.com - _Prerelease v${{ inputs.version }}_**<br/>" + core.getInput('commit-message', { required: true }),
+                prerelease: true,
+                draft: false,
+              });
+
+              const existingAssets = await github.rest.repos.listReleaseAssets({
+                owner: "${{ github.repository_owner }}",
+                repo: repoName,
+                release_id: releaseId
+              });
+              for (const asset of existingAssets.data) {
+                await github.rest.repos.deleteReleaseAsset({
+                  owner: "${{ github.repository_owner }}",
+                  repo: repoName,
+                  asset_id: asset.id
+                });
+              }
+            } else {
+              const releaseResponse = await github.rest.repos.createRelease({
+                  body: "**DylanLangston.com - _Prerelease v${{ inputs.version }}_**<br/>" + core.getInput('commit-message', { required: true }),
+                  name: "v${{ inputs.version }}",
+                  make_latest: "true",
+                  owner: "${{ github.repository_owner }}",
+                  prerelease: true,
+                  draft: false,
+                  repo: repoName,
+                  target_commitish: "${{ github.sha }}",
+                  tag_name: "v${{ inputs.version }}"
+              });
+              releaseId = releaseResponse.data.id;
+              uploadUrl = releaseResponse.data.upload_url;
+            }
+
+            if (releaseId == undefined) throw new Error("ReleaseID is undefined");
+            if (uploadUrl == undefined) throw new Error("UploadURL is undefined");
+
+            const allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: '${{ github.run_id }}',
+            });
+
+            const artifactsFolder = path.join(process.env.GITHUB_WORKSPACE, 'artifacts');
+            if (!fs.existsSync(artifactsFolder)) {
+              fs.mkdirSync(artifactsFolder);
+            }
+
+            for (let prefix of ["dylanlangston.com-v", "dylanlangston.com-contact-v", "dylanlangston.com-email-v", "dylanlangston.com-chat-v"]) {
+              const matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+                return artifact.name == prefix + "${{ inputs.version }}"
+              })[0];
+              if (!matchArtifact) continue;
+
+              const download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: matchArtifact.id,
+                archive_format: 'zip',
+              });
+
+              const filePath = path.join(artifactsFolder, `${prefix}${{ inputs.version }}.zip`);
+              const fileBuffer = Buffer.from(download.data);
+              fs.writeFileSync(filePath, fileBuffer);
+
+              const uploadResponse = await github.rest.repos.uploadReleaseAsset({
+                  url: uploadUrl,
+                  headers: {
+                      "content-length": download.headers['content-length'],
+                      "content-type": download.headers['content-type']
+                  },
+                  data: download.data,
+                  name: prefix + "${{ inputs.version }}.zip",
+                  owner: "${{ github.repository_owner }}",
+                  release_id: releaseId,
+                  repo: repoName
+              });
+            }
+      - name: Deploy to AWS
+        uses: dylanlangston/dylanlangston.com/.github/actions/SAMDeploy@main
+        id: deploy
+        with:
+          aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+          aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          aws-acm-arn: "${{ secrets.AWS_ACM_ARN }}"
+          aws-cloudfront-distribution: "${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION }}"
+          aws-region: 'us-east-1'
+          to-email: "${{ secrets.TO_EMAIL }}"
+          from-email: "${{ secrets.FROM_EMAIL }}"
+          aws-bucket: "${{ secrets.AWS_BUCKET }}"
+          aws-account-id: "${{ secrets.AWS_ACCOUNT_ID }}"
+          gemini-api-key: "${{ secrets.GEMINI_API_KEY }}"
+            

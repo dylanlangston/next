@@ -1,0 +1,38 @@
+name: 1️⃣ - Test Site
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      shouldCache:
+        required: false
+        default: true
+        type: boolean
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: "Test 🧪"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Test Summary
+        uses: dylanlangston/dylanlangston.com/.github/actions/PopulateBuildSummary@main
+        id: summary
+        with:
+          version: ${{ inputs.version }}
+          mode: 'test'
+          runId: ${{ github.run_id }}
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+      - name: Checkout Submodules
+        run: make setup-git-clone
+      - name: Test using Docker
+        if: ${{ always() }}
+        run: make test-docker VERSION=${{ inputs.version }}
