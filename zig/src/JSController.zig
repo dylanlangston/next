@@ -1,5 +1,4 @@
 const std = @import("std");
-const Logger = @import("Logger.zig").Logger;
 
 const JS_Keys = enum(usize) {
     Up = 0,
@@ -51,8 +50,7 @@ pub fn set_js_key(button: usize, down: bool) callconv(.C) void {
             JSGameController.SetButton(JSGameController.Buttons.Start, down);
         },
         else => {
-            const buttonDown = if (down) "pressed" else "released";
-            Logger.Debug_Formatted("Unknown JS_Key {s}: {}", .{ buttonDown, button });
+            @panic("Unknown JS_Key");
         },
     }
 }
