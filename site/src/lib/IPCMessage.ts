@@ -1,4 +1,5 @@
 import { hash } from "$lib/Common";
+import type { Button } from "./Controller";
 
 export enum IPCMessageType {
     Initialize,
@@ -6,7 +7,10 @@ export enum IPCMessageType {
     AddEventHandler,
     RemoveEventHandler,
     EventHandlerCallback,
+    AddMediaQueryHandler,
+    RemoveMediaQueryHandler,
     AudioEvent,
+    SetJSKey
 }
 
 // This class is used for communication between web worker and main page
@@ -32,10 +36,21 @@ export class IPCMessage {
         type: string;
         event: any;
     }) => new IPCMessage(IPCMessageType.EventHandlerCallback, eventInfo);
+    public static AddMediaQueryHandler = (eventInfo: {
+        id: number;
+        target: string;
+        type: string;
+    }) => new IPCMessage(IPCMessageType.AddMediaQueryHandler, eventInfo);
+    public static RemoveMediaQueryHandler = (eventInfo: {
+        id: number;
+        target: string;
+        type: string;
+    }) => new IPCMessage(IPCMessageType.RemoveMediaQueryHandler, eventInfo);
     public static AudioEvent = (type: AudioEventType, details: any = null) => new IPCMessage(IPCMessageType.AudioEvent, {
         type: type,
         details: details
     });
+    public static SetJSKey = (location: Button, down: boolean) => new IPCMessage(IPCMessageType.SetJSKey, {location, down});
 
     private constructor(type: IPCMessageType, message: IPCMessageDataType = undefined) {
         this.type = type;
@@ -54,6 +69,8 @@ export class IPCMessage {
             case IPCMessageType.EventHandlerCallback:
             case IPCMessageType.AddEventHandler:
             case IPCMessageType.RemoveEventHandler:
+            case IPCMessageType.AddMediaQueryHandler:
+            case IPCMessageType.RemoveMediaQueryHandler:
                 const message = (<{
                     id: number;
                     target: string;
@@ -66,6 +83,11 @@ export class IPCMessage {
                     type: AudioEventType,
                     details?: any
                 }>this.message).type);
+            case IPCMessageType.SetJSKey:
+                return hash(this.type.toString() + (<{
+                    location: Button, 
+                    down: boolean
+                }>this.message).location)
             default:
                 return hash(this.type.toString());
         };
@@ -86,6 +108,10 @@ export type IPCMessageDataType =
     {
         type: AudioEventType,
         details?: any
+    } |
+    {
+        location: Button, 
+        down: boolean
     } |
     PointerEvent |
     undefined;

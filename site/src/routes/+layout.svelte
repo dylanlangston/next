@@ -14,11 +14,12 @@
 	import { quintOut, bounceInOut, backOut, elasticOut } from 'svelte/easing';
 	import { readable, writable, get } from 'svelte/store';
 	import { Environment, useMediaQuery } from '$lib/Common';
-	import ContextMenu from '$components/context-menu.svelte';
 	import Modal from '$components/modal.svelte';
 	import CookiePrompt from '$components/cookie-prompt.svelte';
 	import CookieSettings from '$components/cookie-settings.svelte';
 	import { CookieSettingsManager } from '$lib/CookieSettingsManager';
+	import type { Button } from '$lib/Controller';
+	import { IPCMessage } from '$lib/IPCMessage';
 
 	const key = 'main';
 	const [send, receive] = crossfade({
@@ -72,6 +73,7 @@
 	let loaded: boolean = false;
 	let emscriptenLoaded: boolean = false;
 	let main: HTMLDivElement | undefined = undefined;
+	let setKey: ((location: Button, down: boolean) => void) | undefined;
 
 	let showCookieModal = false;
 	let showInitialCookieModal = true;
@@ -114,6 +116,8 @@
 		});
 	}
 </script>
+
+<svelte:window on:contextmenu={(ev) => ev.preventDefault()} />
 
 <svelte:head>
 	{#if Environment.Dev}
@@ -161,10 +165,18 @@
 			in:animateIn={{ key }}
 			bind:this={main}
 		>
-			<Emscripten Loaded={() => (emscriptenLoaded = true)} />
+			<Emscripten bind:SetKey={setKey} Loaded={() => (emscriptenLoaded = true)} />
 			{#if emscriptenLoaded}
 				{#if $mobile}
-					<GameController />
+					<GameController 
+						handleButtonPressed={(button) => {
+							if (setKey) {
+								setKey(button, true)
+							}
+						}}
+						handleButtonReleased={(button) => {
+							if (setKey) setKey(button, false)
+						}} />
 				{/if}
 				<div class="w-screen" in:blur|local={{ duration: 500 }}>
 					<Header />

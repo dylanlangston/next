@@ -2,7 +2,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import MouseCursor from './mouse-cursor.svelte';
-	import ContextMenu from './context-menu.svelte';
 
 	export let showModal: boolean;
 	export let canCloseByClickingOutside: boolean = false;

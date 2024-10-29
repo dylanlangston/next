@@ -2,11 +2,61 @@ const std = @import("std");
 const Common = @import("root").Common;
 const raylib = Common.raylib;
 const emscripten = Common.emscripten;
+const JSButtons = @import("JSController.zig").JSGameController.Buttons;
+const JSButtonsIterator = Common.Generic.Iterator(JSButtons);
 const KeyIterator = Common.Generic.Iterator(raylib.KeyboardKey);
+const JSGameController = @import("JSController.zig").JSGameController;
 
 pub const Inputs = struct {
     const Keys = enum { Up, Down, Left, Right, A, Start };
     const Direction = enum { Up, Down, Left, Right };
+
+    inline fn GetJSKeys(keys: Keys) JSButtonsIterator {
+        switch (keys) {
+            .Up => {
+                return JSButtonsIterator{
+                    .items = &[_:0]JSButtons{
+                        JSButtons.Up,
+                    },
+                };
+            },
+            .Down => {
+                return JSButtonsIterator{
+                    .items = &[_:0]JSButtons{
+                        JSButtons.Down,
+                    },
+                };
+            },
+            .Left => {
+                return JSButtonsIterator{
+                    .items = &[_:0]JSButtons{
+                        JSButtons.Left,
+                    },
+                };
+            },
+            .Right => {
+                return JSButtonsIterator{
+                    .items = &[_:0]JSButtons{
+                        JSButtons.Right,
+                    },
+                };
+            },
+            .A => {
+                return JSButtonsIterator{
+                    .items = &[_]JSButtons{
+                        JSButtons.A,
+                    },
+                };
+            },
+            .Start => {
+                return JSButtonsIterator{
+                    .items = &[_]JSButtons{
+                        JSButtons.Start,
+                    },
+                };
+            },
+        }
+    }
 
     inline fn GetRaylibKeys(keys: Keys) KeyIterator {
         switch (keys) {
@@ -61,15 +111,25 @@ pub const Inputs = struct {
     }
 
     pub inline fn Held(key: Keys) bool {
-        var iterator = GetRaylibKeys(key);
-        while (iterator.next()) |k| {
+        var jskeyIterator = GetJSKeys(key);
+        while (jskeyIterator.next()) |b| {
+            if (JSGameController.ButtonHeld(b)) return true;
+        }
+
+        var raylibIterator = GetRaylibKeys(key);
+        while (raylibIterator.next()) |k| {
             if (raylib.IsKeyDown(@intCast(k))) return true;
         }
         return false;
     }
     pub inline fn Pressed(key: Keys) bool {
-        var iterator = GetRaylibKeys(key);
-        while (iterator.next()) |k| {
+        var jskeyIterator = GetJSKeys(key);
+        while (jskeyIterator.next()) |b| {
+            if (JSGameController.ButtonPressed(b)) return true;
+        }
+
+        var raylibIterator = GetRaylibKeys(key);
+        while (raylibIterator.next()) |k| {
             if (raylib.IsKeyPressed(@intCast(k))) return true;
         }
         return false;

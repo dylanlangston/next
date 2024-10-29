@@ -1,4 +1,5 @@
 import { sveltekit } from '@sveltejs/kit/vite';
+import { paraglide } from "@inlang/paraglide-js-adapter-sveltekit/vite"
 import { defineConfig } from 'vitest/config';
 import { resolve, join } from 'path';
 import optimizeWASMPlugin from './OptimizeWASMPlugin.ts';
@@ -8,6 +9,10 @@ const args = getArgs();
 
 export default defineConfig({
 	plugins: [
+		paraglide({
+			project: "./project.inlang",
+			outdir: "./src/lib/paraglide",
+		}),
 		optimizeWASMPlugin({enabled: !args.Debug}),
 		sveltekit()
 	],

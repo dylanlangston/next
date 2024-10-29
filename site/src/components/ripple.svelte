@@ -100,6 +100,7 @@
 	export let fullscreen: boolean = false;
 
 	export let classList: string = '';
+	export let parentClassList: string = 'rounded-lg relative overflow-hidden';
 
 	export let color: string = 'var(--Main)';
 
@@ -111,7 +112,7 @@
 {#if $accessibilityRequested}
 	<slot />
 {:else}
-	<div class={escapeParent ? '' : 'rounded-lg relative overflow-hidden'}>
+	<div class={escapeParent ? '' : parentClassList}>
 		<div class={classList} use:ripple>
 			<slot />
 		</div>

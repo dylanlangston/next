@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { CookieSettingsManager } from "$lib/CookieSettingsManager";
+	import * as m from '$lib/paraglide/messages.js';
 
 	export let onSave: (settings: { analytics: boolean }) => void;
     const initialPreferences = CookieSettingsManager.getPreferences();
@@ -11,12 +12,12 @@
 </script>
 
 <div class="p-6 text-center">
-	<h3 class="text-3xl font-semibold sm:text-4xl">🍪 Settings</h3>
+	<h3 class="text-3xl font-semibold sm:text-4xl">{m.cookie_settings_emoji()}</h3>
 	<hr class="h-0.25 mt-2 bg-black dark:bg-white border-transparent rounded-lg" />
 
 	<div class="mt-4">
 		<div class="flex justify-between">
-			<label for="required" class="text-lg">Required</label>
+			<label for="required" class="text-lg">{m.required()}</label>
 			<button
 				type="button"
 				class="relative w-12 h-6 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-main bg-main opacity-50"
@@ -31,13 +32,13 @@
 			</button>
 		</div>
 		<p class="text-xs text-left mt-2">
-			Minimal cookies which are required to save preferences locally.
+			{m.minimal_cookies()}
 		</p>
 	</div>
 
 	<div class="mt-4">
 		<div class="flex justify-between">
-			<label for="analytics" class="text-lg">Google Analytics</label>
+			<label for="analytics" class="text-lg">{m.google_analytics()}</label>
 			<button
 				type="button"
 				class="relative w-12 h-6 rounded-full transition-colors duration-300 {analyticsEnabled
@@ -56,7 +57,7 @@
 			</button>
 		</div>
 		<p class="text-xs text-left mt-2">
-			Allow me to collect anonymous data about your visit to improve my website's performance.
+			{m.anonymouse_data_cookies()}
 		</p>
 	</div>
 
@@ -66,7 +67,7 @@
 			type="button"
 			class="inline-flex px-4 py-2 font-medium rounded-lg duration-150 hover:shadow-md hover:bg-main disabled:bg-transparent transition-colors disabled:cursor-not-allowed"
 		>
-			Save Settings
+			{m.save_settings()}
 		</button>
 	</div>
 </div>

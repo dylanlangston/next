@@ -4,6 +4,8 @@ pub const Common = @import("Common.zig").Common;
 const raylib = Common.raylib;
 const emscripten = Common.emscripten;
 
+export const set_js_key = @import("JSController.zig").set_js_key;
+
 pub fn main() !void {
     Common.init();
     defer Common.deinit();

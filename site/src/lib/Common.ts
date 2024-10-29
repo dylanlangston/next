@@ -13,8 +13,9 @@ export const sanitizeEvent = <T>(e: any, n: number = 0): T => {
         if (e[k] instanceof Node) continue;
         if (e[k] instanceof Window) {
             obj[k] = {
-                width: window.innerWidth * window.devicePixelRatio,
-                height: window.innerHeight * window.devicePixelRatio,
+                width: window.innerWidth,
+                height: window.innerHeight,
+                devicePixelRatio: window.devicePixelRatio
             };
             continue;
         }

@@ -16,6 +16,7 @@ export interface IEmscripten extends CustomEmscriptenModule, EmscriptenModule {
 interface ICustomEmscriptenModule {
 	requestFullscreen?: (lockPointer: boolean, resizeCanvas: boolean) => void;
 	onFullScreen?: (fullscreen: boolean) => void;
+	_set_js_key?: (location: number, down: boolean) => void;
 
 	onAbort: { (what: any): void };
 
@@ -52,6 +53,7 @@ class CustomEmscriptenModule implements ICustomEmscriptenModule {
 	}
 
 	requestFullscreen?: (lockPointer: boolean, resizeCanvas: boolean) => void;
+	_set_js_key?: (location: number, down: boolean) => void;
 
 	elementPointerLock: boolean = false;
 

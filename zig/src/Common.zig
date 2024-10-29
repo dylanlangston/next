@@ -317,8 +317,6 @@ pub const Common = struct {
                     _ = callback;
                     _ = data;
 
-                    Common.Log.Info("Focus");
-
                     Focused = true;
 
                     return false;
@@ -329,8 +327,6 @@ pub const Common = struct {
                     _ = t;
                     _ = callback;
                     _ = data;
-
-                    Common.Log.Info("Blur");
 
                     Focused = false;
 

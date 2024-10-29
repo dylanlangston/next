@@ -8,11 +8,13 @@ export namespace WorkerDOM {
     export function SetSampleRate(r: number) {
         rate = r;
     }
-    let width: number = 1;
-    let height: number = 1;
-    export function SetSize(w: number, h: number)  {
+    export let width: number = 1;
+    export let height: number = 1;
+    export let dpi: number = 1;
+    export function SetSize(w: number, h: number, dpi: number)  {
         width = w;
         height = h;
+        dpi = dpi;
     }
 
     export class Window {
@@ -26,8 +28,14 @@ export namespace WorkerDOM {
         }
         public matchMedia(query: string): MediaQueryList {
             return <any>{
-                addEventListener: (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void => { },
-                removeEventListener: (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void => { },
+                addEventListener: (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void => { 
+                    const id = IPCProxy.Add(listener, type);
+                    postMessage(IPCMessage.AddMediaQueryHandler({ id, target: query, type }));
+                },
+                removeEventListener: (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void => { 
+                    const id = IPCProxy.Remove(listener, type);
+                    postMessage(IPCMessage.RemoveMediaQueryHandler({ id, target: query, type }));
+                },
             };
         }
         public get innerWidth(): number {
@@ -45,6 +53,9 @@ export namespace WorkerDOM {
         public get navigator(): object {
             debugger;
             return {};
+        }
+        public get devicePixelRatio(): number {
+            return dpi;
         }
         public miniaudio = self.miniaudio;
         public AudioContext = AudioContext;

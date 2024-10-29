@@ -1,7 +1,10 @@
-import { EmscriptenInitialize } from '$lib/Emscripten';
+import { EmscriptenInitialize, type IEmscripten } from '$lib/Emscripten';
 import { AudioEventType, IPCMessage, IPCMessageType, type IPCMessageDataType } from '$lib/IPCMessage';
 import { IPCProxy } from '$lib/IPCProxy';
 import { WorkerDOM } from '$lib/WorkerDOM';
+import type { Button } from './Controller';
+
+let Emscripten: IEmscripten | undefined;
 
 // Define all events here
 // The rest of this file should be boilerplate code...
@@ -18,6 +21,7 @@ eventHandlers[IPCMessageType.Initialize] = (message: IPCMessageDataType) => {
     WorkerDOM.SetSampleRate(eventDetails.audioSampleRate);
     self.document = new WorkerDOM.Document(canvas);
     EmscriptenInitialize(canvas).then(emscripten => {
+        Emscripten = emscripten;
         postMessage(IPCMessage.Initialized())
     })
 };
@@ -32,10 +36,16 @@ eventHandlers[IPCMessageType.EventHandlerCallback] = (message) => {
         eventHandler.event.changedTouches = Array.from(eventHandler.event.changedTouches);
     }
     eventHandler.event.preventDefault = () => { };
-    if (eventHandler.type == "resize") {
-        eventHandler.event.target = self.window;
-    } else {
-        eventHandler.event.target = self.document.getCanvas();
+    switch (eventHandler.type)
+    {
+        case "resize":
+            const {width, height, devicePixelRatio} = eventHandler.event.target;
+            eventHandler.event.target = self.window;
+            WorkerDOM.SetSize(width, height, devicePixelRatio);
+            break;
+        default:
+            eventHandler.event.target = self.document.getCanvas();
+            break;
     }
 
     if (eventHandler.event.touches) {
@@ -84,7 +94,17 @@ eventHandlers[IPCMessageType.AudioEvent] = (message) => {
             break;
     }
 };
+// Set JS Key callback
+eventHandlers[IPCMessageType.SetJSKey] = (message) => {
+    let eventHandler: {
+        location: Button, 
+        down: boolean
+    } = <any>message;
 
+    if (Emscripten?._set_js_key) {
+        Emscripten._set_js_key(eventHandler.location, eventHandler.down);
+    }
+}
 
 
 // Register Event Handler for all Worker Messages
@@ -126,25 +146,26 @@ self.onmessage = (ev: MessageEvent<IPCMessage>) => {
         WorkerMessageEventHandler.Handler.OnMessage(ev.data.type, ev.data.message);
     }
 };
-// This is just a dummy/placeholder, as the correctly scaled resolution is already sent to the worker
-self.devicePixelRatio = 1;
 
 Object.defineProperty(self, "innerWidth", {
-    get: () => self.window.innerWidth,
+    get: () => WorkerDOM.width,
 });
 Object.defineProperty(self, "innerHeight", {
-    get: () => self.window.innerHeight,
+    get: () => WorkerDOM.height,
 });
 Object.defineProperty(self, "outerWidth", {
-    get: () => self.window.innerWidth,
+    get: () => WorkerDOM.width,
 });
 Object.defineProperty(self, "outerHeight", {
-    get: () => self.window.innerHeight,
+    get: () => WorkerDOM.height,
 });
 Object.defineProperty(self, "pageXOffset", {
     get: () => self.window.scrollX,
 });
 Object.defineProperty(self, "pageYOffset", {
     get: () => self.window.scrollY,
+});
+Object.defineProperty(self, "devicePixelRatio", {
+    get: () => WorkerDOM.dpi,
 });
 export { };

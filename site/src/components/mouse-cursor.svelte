@@ -21,7 +21,7 @@
 		}
 	);
 
-	let size = spring(10, {
+	let size = spring(0, {
 		stiffness: 0.05,
 		damping: 0.35
 	});

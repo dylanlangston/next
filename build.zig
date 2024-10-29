@@ -231,7 +231,7 @@ fn build_web(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.buil
         "-DPLATFORM_WEB",
         "-sENVIRONMENT=worker",
         "-sDEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[]",
-        "-sEXPORTED_FUNCTIONS=['_malloc','_free','_main']",
+        "-sEXPORTED_FUNCTIONS=['_malloc','_free','_main', '_set_js_key']",
         if (debugging_wasm)
             "-sEXPORTED_RUNTIME_METHODS=stringToNewUTF8,UTF8ToString,abort,WasmOffsetConverter"
         else

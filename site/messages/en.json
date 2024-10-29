@@ -1,0 +1,21 @@
+{
+    "$schema": "https://inlang.com/schema/inlang-message-format",
+    "Pause": "Pause",
+    "Up": "Up",
+    "Down": "Down",
+    "Left": "Left",
+    "Right": "Right",
+    "A": "A",
+    "made_with_raylib": "Made with raylib",
+    "cookie_settings": "Cookie Settings",
+    "value_privacy": "I Value Your Privacy",
+    "site_uses_cookies": "This site uses cookies to enhance your browsing experience and analyze site traffic.",
+    "accept_cookies_msg": "By clicking \"Accept 🍪\", you consent to the use of all cookies.",
+    "accept_cookies": "Accept &nbsp;🍪",
+    "cookie_settings_emoji": "🍪 Settings",
+    "required": "Required",
+    "minimal_cookies": "Minimal cookies which are required to save preferences locally.",
+    "google_analytics": "Google Analytics",
+    "anonymouse_data_cookies": "Allow me to collect anonymous data about your visit to improve my website's performance.",
+    "save_settings": "Save Settings"
+}

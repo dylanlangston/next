@@ -12,23 +12,29 @@ pub const HelloWorldView = Common.ViewLocator.createView(
 
             raylib.DrawText("Hello OpenGL World", 190, 200, 20, raylib.LIGHTGRAY);
 
-            var buf: [64:0]u8 = undefined;
-            if (std.fmt.bufPrintZ(&buf, "Mouse X: {}, Mouse Y: {}, Click: {}", .{ raylib.GetMouseX(), raylib.GetMouseY(), raylib.IsMouseButtonDown(raylib.MOUSE_BUTTON_LEFT) })) |_| {
-                raylib.DrawText(&buf, 190, 225, 20, raylib.LIGHTGRAY);
+            var buf: [128:0]u8 = undefined;
+            if (std.fmt.bufPrintZ(&buf, "Mouse X: {}, Mouse Y: {}, Click: {}, Screen Width: {}, Screen Height: {}", .{
+                raylib.GetMouseX(),
+                raylib.GetMouseY(),
+                raylib.IsMouseButtonDown(raylib.MOUSE_BUTTON_LEFT),
+                raylib.GetScreenWidth(),
+                raylib.GetScreenHeight(),
+            })) |_| {
+                raylib.DrawText(&buf, 90, 225, 20, raylib.LIGHTGRAY);
             } else |_| {
                 raylib.DrawText("Failed to get mouse position!", 190, 225, 20, raylib.LIGHTGRAY);
             }
 
             const music = HelloWorldViewModel.music;
             if (Common.Input.Held(.A)) {
-                raylib.DrawText("Space Pressed", 190, 250, 20, raylib.BLUE);
+                raylib.DrawText("A/Space/Enter Held", 190, 250, 20, raylib.BLUE);
 
                 music.Play();
             } else {
                 music.Pause();
             }
 
-            if (Common.Focused == false) {
+            if (Common.Focused == false or Common.Input.Pressed(.Start)) {
                 return .Test;
             } else {
                 return .HelloWorld;

@@ -15,8 +15,15 @@
 	import StatusContainer from '$components/status-container.svelte';
 	import { Favicon } from '$lib/Favicon';
 	import type { Unsubscriber } from 'svelte/store';
+	import type { Button } from '$lib/Controller';
 
 	export let Loaded: () => void;
+
+	export const SetKey = (location: Button, down: boolean) => {
+		if (setKey) setKey(location, down);
+	};
+
+	let setKey: ((location: Button, down: boolean) => void) | undefined;
 
 	const initWorker = async (canvasElement: HTMLCanvasElement) =>
 		new Promise<Worker>((resolve, reject) => {
@@ -79,6 +86,35 @@
 				} else {
 					const listener = listeners[eventHandler.id];
 					target.removeEventListener(eventHandler.type, listener);
+					listeners[eventHandler.id] = undefined!;
+				}
+			}
+
+			let mediaQueries: ((e: Event) => void)[] = [];
+			function HandleMediaQuery(
+				add: boolean,
+				eventHandler: {
+					id: number;
+					target: string;
+					type: string;
+				}
+			) {
+				if (add) {
+					const mediaQuery = (e: Event) =>
+						worker?.postMessage(
+							IPCMessage.EventHandlerCallback({
+								id: eventHandler.id,
+								target: eventHandler.target,
+								type: eventHandler.type,
+								event: sanitizeEvent(e)
+							})
+						);
+					mediaQueries[eventHandler.id] = mediaQuery;
+					window.matchMedia(eventHandler.target).addEventListener('change', mediaQuery);
+				} else {
+					const mediaQuery = mediaQueries[eventHandler.id];
+					window.matchMedia(eventHandler.target).removeEventListener('change', mediaQuery);
+					mediaQueries[eventHandler.id] = undefined!;
 				}
 			}
 
@@ -148,6 +184,12 @@
 					case IPCMessageType.RemoveEventHandler:
 						HandleEvent(false, <any>ev.data.message);
 						break;
+					case IPCMessageType.AddMediaQueryHandler:
+						HandleMediaQuery(true, <any>ev.data.message);
+						break;
+					case IPCMessageType.RemoveMediaQueryHandler:
+						HandleMediaQuery(false, <any>ev.data.message);
+						break;
 					case IPCMessageType.AudioEvent:
 						HandleAudio(<any>ev.data.message);
 						break;
@@ -156,6 +198,9 @@
 				}
 			};
 			worker.onerror = (er) => reject(er);
+			setKey = (location, down) => {
+				worker.postMessage(IPCMessage.SetJSKey(location, down));
+			};
 		});
 
 	let favicon: Favicon | undefined = undefined;
@@ -190,6 +235,9 @@
 					emscripten.abort('Canceled');
 				} catch {}
 			};
+			setKey = (location, down) => {
+				if (emscripten._set_js_key) emscripten._set_js_key(location, down);
+			};
 		}
 
 		favicon = new Favicon(canvasElement);
@@ -215,7 +263,6 @@
 		if (mobileSubscription) mobileSubscription();
 	});
 
-
 	function setCanvas(self: HTMLDivElement, options: { canvas: HTMLCanvasElement }) {
 		self.appendChild(options.canvas);
 		return {
@@ -227,7 +274,7 @@
 </script>
 
 {#await loadFn() then canvas}
-	<div in:fade={{ duration: 500 }} use:setCanvas={{ canvas }} />
+	<div on:contextmenu={(ev) => ev.preventDefault()} in:fade={{ duration: 500 }} use:setCanvas={{ canvas }}></div>
 {:catch error}
 	<!-- Todo Dialog with Error Message -->
 {/await}
