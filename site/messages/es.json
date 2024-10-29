@@ -1,3 +1,21 @@
 {
-    "$schema": "https://inlang.com/schema/inlang-message-format"
+    "$schema": "https://inlang.com/schema/inlang-message-format",
+    "Pause": "",
+    "Up": "",
+    "Down": "",
+    "Left": "",
+    "Right": "",
+    "A": "",
+    "made_with_raylib": "",
+    "cookie_settings": "",
+    "value_privacy": "",
+    "site_uses_cookies": "",
+    "accept_cookies_msg": "",
+    "accept_cookies": "",
+    "cookie_settings_emoji": "",
+    "required": "",
+    "minimal_cookies": "",
+    "google_analytics": "",
+    "anonymouse_data_cookies": "",
+    "save_settings": ""
 }
