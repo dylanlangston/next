@@ -41,8 +41,7 @@ RUN echo "# ZVM" >> $HOME/.bashrc &&\
  echo export PATH="\$PATH:\$ZVM_INSTALL/self" >> $HOME/.bashrc
 
 # Install ZIG & ZLS
-RUN $HOME/.zvm/self/zvm i --zls 0.13.0
-RUN $HOME/.zvm/self/zvm i master
+RUN $HOME/.zvm/self/zvm i --zls master
 
 # Install Node
 RUN apt-get -y install --no-install-recommends nodejs npm

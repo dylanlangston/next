@@ -17,13 +17,6 @@ RUN install -m 0755 -d /etc/apt/keyrings \
 # Allow vscode user to run docker commands without sudo
 RUN usermod -aG docker vscode
 
-# Install AWS SAM CLI
-RUN curl -L "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip" -o sam.zip
-RUN unzip sam.zip -d ./sam
-RUN rm sam.zip
-RUN ./sam/install
-RUN rm -rf ./sam
-
 # Clean Image
 RUN apt-get clean && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 
@@ -39,8 +32,7 @@ RUN echo export PATH="\$PATH:\$ZVM_INSTALL/bin" >> /home/vscode/.bashrc
 RUN echo export PATH="\$PATH:\$ZVM_INSTALL/self" >> /home/vscode/.bashrc
 
 # Install ZIG & ZLS
-RUN $HOME/.zvm/self/zvm i --zls 0.13.0
-RUN $HOME/.zvm/self/zvm i master
+RUN $HOME/.zvm/self/zvm i --zls master
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash

@@ -14,13 +14,6 @@ RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y
      && sudo apt update \
      && sudo apt install gh -y
 
-# Install AWS SAM CLI
-RUN curl -L "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip" -o sam.zip
-RUN unzip sam.zip -d ./sam
-RUN rm sam.zip
-RUN sudo ./sam/install
-RUN rm -rf ./sam
-
 # Important we change to the gitpod user that the devcontainer runs under
 USER gitpod
 WORKDIR /home/gitpod
@@ -33,8 +26,7 @@ RUN echo export PATH="\$PATH:\$ZVM_INSTALL/bin" >> $HOME/.bashrc
 RUN echo export PATH="\$PATH:\$ZVM_INSTALL/self" >> $HOME/.bashrc
 
 # Install ZIG & ZLS
-RUN $HOME/.zvm/self/zvm i --zls 0.13.0
-RUN $HOME/.zvm/self/zvm i master
+RUN $HOME/.zvm/self/zvm i --zls master
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash
