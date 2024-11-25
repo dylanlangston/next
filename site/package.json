@@ -20,7 +20,7 @@
     "@inlang/paraglide-js-adapter-sveltekit": "^0.6.7",
     "@playwright/test": "^1.49.0",
     "@sveltejs/adapter-static": "^3.0.6",
-    "@sveltejs/kit": "^2.8.1",
+    "@sveltejs/kit": "^2.8.3",
     "@sveltejs/vite-plugin-svelte": "^4.0.2",
     "@types/eslint": "^9.6.1",
     "@types/node": "^22.9.3",
