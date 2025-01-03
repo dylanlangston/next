@@ -16,7 +16,7 @@
     "test:unit": "vitest run"
   },
   "devDependencies": {
-    "@inlang/paraglide-js": "1.11.3",
+    "@inlang/paraglide-js": "1.11.5",
     "@inlang/paraglide-js-adapter-sveltekit": "^0.6.7",
     "@playwright/test": "^1.49.1",
     "@sveltejs/adapter-static": "^3.0.6",
