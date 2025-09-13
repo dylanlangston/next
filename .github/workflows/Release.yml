@@ -147,7 +147,7 @@ jobs:
             }
       - name: Download artifact compressed
         id: download
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: next-v${{ inputs.version }}
       - name: Push to itch.io
