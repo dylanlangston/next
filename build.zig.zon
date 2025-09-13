@@ -1,7 +1,8 @@
 .{
-    .name = "next",
+    .name = .next,
+    .fingerprint = 0x42f103c7e466175,
     .version = "1.0.0",
-    .minimum_zig_version = "0.13.0",
+    .minimum_zig_version = "0.15.1",
     .dependencies = .{
         .raylib = .{
             .path = "raylib",

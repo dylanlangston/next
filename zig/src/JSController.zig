@@ -13,7 +13,7 @@ const JS_Keys = enum(usize) {
     Start,
 };
 
-pub fn set_js_key(button: usize, down: bool) callconv(.C) void {
+pub fn set_js_key(button: usize, down: bool) callconv(.c) void {
     switch (button) {
         @intFromEnum(JS_Keys.Up) => {
             JSGameController.SetButton(JSGameController.Buttons.Up, down);

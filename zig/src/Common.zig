@@ -291,7 +291,7 @@ pub const Common = struct {
 
             // Handle Resize
             _ = emscripten.emscripten_set_resize_callback(2, null, true, &struct {
-                fn resize(t: c_int, data: [*c]const emscripten.struct_EmscriptenUiEvent, callback: ?*anyopaque) callconv(.C) bool {
+                fn resize(t: c_int, data: [*c]const emscripten.struct_EmscriptenUiEvent, callback: ?*anyopaque) callconv(.c) bool {
                     _ = t;
                     _ = callback;
 
@@ -312,7 +312,7 @@ pub const Common = struct {
 
             // Handle Visiblity Change
             _ = emscripten.emscripten_set_focus_callback(2, null, true, &struct {
-                fn focus(t: c_int, data: [*c]const emscripten.struct_EmscriptenFocusEvent, callback: ?*anyopaque) callconv(.C) bool {
+                fn focus(t: c_int, data: [*c]const emscripten.struct_EmscriptenFocusEvent, callback: ?*anyopaque) callconv(.c) bool {
                     _ = t;
                     _ = callback;
                     _ = data;
@@ -323,7 +323,7 @@ pub const Common = struct {
                 }
             }.focus);
             _ = emscripten.emscripten_set_blur_callback(2, null, true, &struct {
-                fn blur(t: c_int, data: [*c]const emscripten.struct_EmscriptenFocusEvent, callback: ?*anyopaque) callconv(.C) bool {
+                fn blur(t: c_int, data: [*c]const emscripten.struct_EmscriptenFocusEvent, callback: ?*anyopaque) callconv(.c) bool {
                     _ = t;
                     _ = callback;
                     _ = data;
