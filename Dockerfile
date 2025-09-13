@@ -17,7 +17,7 @@ WORKDIR /root/next
 
 # Copy only the files we absolutely need
 COPY ./emsdk /root/next/emsdk
-COPY ./site/package-lock.json /root/next/site/package-lock.json
+COPY ./site/package.json /root/next/site/package.json
 COPY ./site/bun.lockb /root/next/site/bun.lockb
 COPY ./site/bunfig.toml /root/next/site/bunfig.toml
 COPY ./Makefile /root/next/Makefile
