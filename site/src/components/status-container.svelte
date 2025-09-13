@@ -22,7 +22,9 @@
 	</Panel>
 </div>
 
-<style global lang="postcss">
+<style global lang="css">
+	@reference "../app.css";
+
 	.spin {
 		@apply animate-spin;
 	}

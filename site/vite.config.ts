@@ -1,19 +1,16 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { paraglide } from "@inlang/paraglide-js-adapter-sveltekit/vite"
 import { defineConfig } from 'vitest/config';
 import { resolve, join } from 'path';
 import optimizeWASMPlugin from './OptimizeWASMPlugin.ts';
 import { getArgs } from './svelte.config.js';
+import tailwindcss from '@tailwindcss/vite'
 const args = getArgs();
 
 
 export default defineConfig({
 	plugins: [
-		paraglide({
-			project: "./project.inlang",
-			outdir: "./src/lib/paraglide",
-		}),
 		optimizeWASMPlugin({enabled: !args.Debug}),
+		tailwindcss(),
 		sveltekit()
 	],
 	assetsInclude: './static/**/*',
@@ -31,7 +28,7 @@ export default defineConfig({
 	},
 	resolve: {
 		alias: {
-			'next.wasm': resolve('./static/next.wasm')
+			'dylanlangston.com.wasm': resolve('./static/dylanlangston.com.wasm')
 		}
 	},
 	ssr: {

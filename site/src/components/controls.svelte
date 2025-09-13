@@ -165,7 +165,9 @@
 	</Ripple>
 </div>
 
-<style global lang="postcss">
+<style global lang="css">
+	@reference "../app.css";
+
 	#dpad {
 		--button-size: 3.5rem;
 		height: calc(var(--button-size) * 3 + 0.5rem);
@@ -211,7 +213,7 @@
 		background-color: theme(colors.neutral.500);
 	}
 
-	#dpad > #up-left.corner.down,
+	/* #dpad > #up-left.corner.down,
 	#dpad > #up-right.corner.down {
 		border-bottom: var(--button-size) solid theme(colors.neutral.500);
 	}
@@ -226,7 +228,7 @@
 		border-width: 0 3px 3px 0;
 		display: inline-block;
 		padding: 3px;
-	}
+	} */
 
 	.arrow.right {
 		transform: rotate(-45deg);

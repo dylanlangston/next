@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@config '../tailwind.config.js';
 
 input,
 textarea,
@@ -24,6 +24,10 @@ a {
   * {
     @apply font-black tracking-wide contrast-125;
   }
+}
+
+.background-overlay {
+  @apply pointer-events-none shadow-inner shadow-black w-full h-full top-0 left-0 fixed animate-[fade-in_1s_linear];
 }
 
 .loader {
@@ -52,7 +56,7 @@ a {
   100% {transform: rotate(1turn)}
 }
 
-.glass {
+@utility glass {
   filter: blur(6px);
   backdrop-filter: blur(0px);
   @apply relative shadow-lg shadow-black/[.5] outline outline-1 outline-black/[0.15] dark:outline-white/[0.15] animate-glass transition-all;

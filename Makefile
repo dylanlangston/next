@@ -17,7 +17,7 @@ endif
 
 # Specify if nodejs should be used instead of bun
 ifeq ($(USE_NODE),)
-	USE_NODE = 1
+	USE_NODE = 0
 else ifeq ($(USE_NODE),0)
 else ifeq ($(USE_NODE),1)
 else
@@ -97,7 +97,6 @@ run-desktop: ## Run the build desktop binary
 
 build-web: ## Build Web. Optionally pass in the OPTIMIZE=... argument.
 # Want to try get this working maybe, but it will need a custom platform I think:
-# zig build -Dtarget=wasm64-freestanding -Doptimize=$(OPTIMIZE) -Dcpu=mvp+atomics+bulk_memory 
 	@zig build -Dtarget=wasm32-emscripten -Dcpu=mvp+simd128+relaxed_simd+nontrapping_fptoint -Doptimize=$(OPTIMIZE) -freference-trace
 
 build-site: ## Build Website. Uses Binaryen to optimize when OPTIMIZE!='Debug', the default.

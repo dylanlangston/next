@@ -1,7 +1,5 @@
 const std = @import("std");
 const builtin = @import("builtin");
-const raylib_builder = @import("raylib");
-const raygui_builder = @import("raygui");
 
 fn define_macros(raylib_module: *std.Build.Module) void {
     // Don't use the built in config.h
